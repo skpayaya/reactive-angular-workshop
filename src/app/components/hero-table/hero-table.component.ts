@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Hero, HeroService } from '../../services/hero.service';
 
 @Component({
@@ -7,14 +8,20 @@ import { Hero, HeroService } from '../../services/hero.service';
     styleUrls: ['./hero-table.component.scss'],
 })
 export class HeroTableComponent implements OnInit {
-    heroes: Hero[];
+    heroes$: Observable<Hero[]> = this.hero.heroes$;
+    search$ = this.hero.searchBS;
+    page$ = this.hero.userPage$;
+    limit$ = this.hero.limitBS;
+    totalPages$ = this.hero.totalPages$;
 
-    constructor(public hero: HeroService) {
-        hero.heroes$.subscribe(heroes => {
-            this.heroes = heroes;
-        });
-    }
+    totalResults$ = this.hero.totalResults$;
+
+    constructor(public hero: HeroService) {}
 
     ngOnInit() {}
+    doSearch(event: any) {
+        this.hero.searchBS.next(event.target.value);
+    }
 
+    movePageBy(moveBy: number) {}
 }
