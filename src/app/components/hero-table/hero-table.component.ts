@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Hero, HeroService } from '../../services/hero.service';
+import { DEFAULT_PAGE, Hero, HeroService } from '../../services/hero.service';
 
 @Component({
     selector: 'rx-hero-table',
@@ -21,6 +21,7 @@ export class HeroTableComponent implements OnInit {
     ngOnInit() {}
     doSearch(event: any) {
         this.search$.next(event.target.value);
+        this.hero.pageBS.next(DEFAULT_PAGE);
     }
 
     movePageBy(moveBy: number) {
@@ -30,5 +31,6 @@ export class HeroTableComponent implements OnInit {
 
     setlimit(limit) {
         this.limit$.next(limit);
+        this.hero.pageBS.next(DEFAULT_PAGE);
     }
 }
