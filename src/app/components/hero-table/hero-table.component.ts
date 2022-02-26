@@ -20,11 +20,15 @@ export class HeroTableComponent implements OnInit {
 
     ngOnInit() {}
     doSearch(event: any) {
-        this.hero.searchBS.next(event.target.value);
+        this.search$.next(event.target.value);
     }
 
     movePageBy(moveBy: number) {
         const currentPage = this.hero.pageBS.getValue();
         this.hero.pageBS.next(currentPage + moveBy);
+    }
+
+    setlimit(limit) {
+        this.limit$.next(limit);
     }
 }
