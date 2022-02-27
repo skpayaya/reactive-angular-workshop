@@ -9,51 +9,53 @@ import { DEFAULT_PAGE, Hero, HeroService } from '../../services/hero.service';
     styleUrls: ['./hero-table.component.scss'],
 })
 export class HeroTableComponent implements OnInit {
-    // heroes$: Observable<Hero[]> = this.hero.heroes$;
-    // search$ = this.hero.searchBS;
-    // page$ = this.hero.userPage$;
-    // limit$ = this.hero.limitBS;
-    // totalResults$ = this.hero.totalResults$;
-    // totalPages$ = this.hero.totalPages$;
-
     // viewmodel
     vm$ = combineLatest([
         this.hero.heroes$,
-        this.hero.searchBS,
+        this.hero.search$,
         this.hero.userPage$,
-        this.hero.limitBS,
+        this.hero.limit$,
         this.hero.totalResults$,
         this.hero.totalPages$,
+        this.hero.loading$,
     ]).pipe(
-        map(([heroes, search, userPage, limit, totalResults, totalPages]) => {
-            return {
+        map(
+            ([
                 heroes,
                 search,
                 userPage,
                 limit,
                 totalResults,
                 totalPages,
-                disableNextButton: totalPages === userPage,
-                disablePrevButton: userPage === 1,
-            };
-        }),
+                loading,
+            ]) => {
+                return {
+                    heroes,
+                    search,
+                    userPage,
+                    limit,
+                    totalResults,
+                    totalPages,
+                    loading,
+                    disableNextButton: totalPages === userPage,
+                    disablePrevButton: userPage === 1,
+                };
+            },
+        ),
     );
 
     constructor(public hero: HeroService) {}
 
     ngOnInit() {}
     doSearch(event: any) {
-        this.hero.searchBS.next(event.target.value);
-        this.hero.pageBS.next(DEFAULT_PAGE);
+        this.hero.doSearch(event.target.value);
     }
 
     movePageBy(moveBy: number) {
-        const currentPage = this.hero.pageBS.getValue();
-        this.hero.pageBS.next(currentPage + moveBy);
+        this.hero.movePageBy(moveBy);
     }
 
     setlimit(limit) {
-        this.hero.limitBS.next(limit);
-        this.hero.pageBS.next(DEFAULT_PAGE);
+        this.hero.setLimit(limit);
     }
 }
