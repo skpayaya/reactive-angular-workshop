@@ -43,7 +43,7 @@ const LIMIT_HIGH = 100;
 const LIMITS = [LIMIT_LOW, LIMIT_MID, LIMIT_HIGH];
 
 export const DEFAULT_LIMIT = LIMIT_LOW;
-export const DEFAULT_SEARCH = 'hulk';
+export const DEFAULT_SEARCH = '';
 export const DEFAULT_PAGE = 0;
 
 @Injectable({
