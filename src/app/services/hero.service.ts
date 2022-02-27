@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import {
     debounceTime,
     distinctUntilChanged,
@@ -74,6 +74,8 @@ export class HeroService {
 
     userPage$ = this.pageBS.pipe(map(page => page + 1));
 
+    private heroesResponseCache = {};
+
     //combine the 3
     private params$ = combineLatest([
         this.searchBS.pipe(debounceTime(500)),
@@ -98,9 +100,16 @@ export class HeroService {
     );
 
     private heroesResponse$ = this.params$.pipe(
-        // debounceTime(500),
         tap(() => this.loadingBS.next(true)),
-        switchMap(_params => this.http.get(HERO_API, { params: _params })),
+        switchMap(_params => {
+            const paramsStr = JSON.stringify(_params);
+            if (this.heroesResponseCache[paramsStr]) {
+                return of(this.heroesResponseCache[paramsStr]);
+            }
+            return this.http
+                .get(HERO_API, { params: _params })
+                .pipe(tap(res => (this.heroesResponseCache[paramsStr] = res)));
+        }),
         shareReplay(1),
         tap(() => this.loadingBS.next(false)),
     );
